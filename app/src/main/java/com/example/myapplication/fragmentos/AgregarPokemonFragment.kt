@@ -1,4 +1,4 @@
-package com.example.myapplication.fragments
+package com.example.myapplication.fragmentos
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.myapplication.databinding.FragmentAgregarPokemonBinding
-import com.example.myapplication.databinding.FragmentMainBinding
 
 class AgregarPokemonFragment : Fragment() {
 

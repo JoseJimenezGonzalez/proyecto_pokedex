@@ -7,17 +7,17 @@
 
     <fragment
         android:id="@+id/agregarPokemonFragment"
-        android:name="com.example.myapplication.fragments.AgregarPokemonFragment"
+        android:name="com.example.myapplication.fragmentos.AgregarPokemonFragment"
         android:label="fragment_agregar_pokemon"
         tools:layout="@layout/fragment_agregar_pokemon" />
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.example.myapplication.fragments.MainFragment"
+        android:name="com.example.myapplication.fragmentos.MainFragment"
         android:label="fragment_main"
         tools:layout="@layout/fragment_main" />
     <fragment
         android:id="@+id/verPokemonFragment"
-        android:name="com.example.myapplication.fragments.VerPokemonFragment"
+        android:name="com.example.myapplication.fragmentos.VerPokemonFragment"
         android:label="fragment_ver_pokemon"
         tools:layout="@layout/fragment_ver_pokemon" />
 </navigation>

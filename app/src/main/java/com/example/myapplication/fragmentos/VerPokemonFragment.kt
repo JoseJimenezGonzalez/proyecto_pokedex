@@ -1,22 +1,22 @@
-package com.example.myapplication.fragments
+package com.example.myapplication.fragmentos
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.myapplication.databinding.FragmentMainBinding
+import com.example.myapplication.databinding.FragmentVerPokemonBinding
 
-class MainFragment : Fragment() {
+class VerPokemonFragment : Fragment() {
 
-    private var _binding: FragmentMainBinding? = null
+    private var _binding: FragmentVerPokemonBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentMainBinding.inflate(inflater, container, false)
+        _binding = FragmentVerPokemonBinding.inflate(inflater, container, false)
         return binding.root
     }
 

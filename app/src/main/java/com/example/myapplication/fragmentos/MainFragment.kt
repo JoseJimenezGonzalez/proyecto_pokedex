@@ -1,4 +1,4 @@
-package com.example.myapplication.fragments
+package com.example.myapplication.fragmentos
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.myapplication.databinding.FragmentMainBinding
 
-class VerPokemonFragment : Fragment() {
+class MainFragment : Fragment() {
 
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
