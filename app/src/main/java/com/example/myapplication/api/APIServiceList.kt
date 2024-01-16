@@ -7,5 +7,4 @@ import retrofit2.http.GET
 interface APIServiceList {
     @GET("pokemon")
     fun getPokemonList(): Call<PokemonApi>
-
 }
