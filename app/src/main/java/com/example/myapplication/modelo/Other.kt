@@ -6,4 +6,4 @@ data class Other
     (
     @SerializedName("official-artwork")
     val officialArtWork: OfficialArtWork
-)
+            )

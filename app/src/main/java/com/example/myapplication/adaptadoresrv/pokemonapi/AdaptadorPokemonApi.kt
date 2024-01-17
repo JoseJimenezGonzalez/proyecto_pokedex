@@ -3,16 +3,15 @@ package com.example.myapplication.adaptadoresrv.pokemonapi
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import com.example.myapplication.modelo.PokemonApi
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.OnItemClickListener
 import com.example.myapplication.R
 import com.example.myapplication.databinding.ItemPokemonApiBinding
+import com.example.myapplication.modelo.PokemonRecyclerView
 import com.squareup.picasso.Picasso
 
 class AdaptadorPokemonApi(
-    private var listaPokemon: MutableList<PokemonApi>,
+    private var listaPokemon: MutableList<PokemonRecyclerView>,
     private val itemClickListener: OnItemClickListener
 ) : RecyclerView.Adapter<AdaptadorPokemonApi.ViewHolder>() {
 
@@ -25,15 +24,15 @@ class AdaptadorPokemonApi(
             view.setOnClickListener(this)
         }
 
-        fun bind(pokemon: PokemonApi) {
-            binding.tvNombrePokemon.text = pokemon.name.capitalize()
-            Picasso.get().load(pokemon.stats[7].stat.url).into(binding.ivFotoPokemon)
+        fun bind(pokemon: PokemonRecyclerView) {
+            binding.tvNombrePokemon.text = pokemon.nombre
+            Picasso.get().load(pokemon.urlFoto).into(binding.ivFotoPokemon)
         }
 
         override fun onClick(p0: View?) {
             val posicion: Int = absoluteAdapterPosition
             if (posicion != RecyclerView.NO_POSITION) {
-                val pokemon: PokemonApi = listaPokemon[posicion]
+                val pokemon: PokemonRecyclerView = listaPokemon[posicion]
                 itemClickListener.onItemClick(pokemon)
             }
         }
