@@ -8,3 +8,7 @@ interface APIServiceList {
     @GET("pokemon")
     fun getPokemonList(): Call<PokemonListaApi>
 }
+
+//¿Por qué se pone @GET("pokemon")?
+//Por ejemplo, si la base de la URL de la API es "https://api.example.com/", la solicitud completa
+// sería "https://api.example.com/pokemon" cuando se llama a getPokemonList().
