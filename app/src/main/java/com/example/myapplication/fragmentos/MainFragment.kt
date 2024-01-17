@@ -82,7 +82,7 @@ class MainFragment() : Fragment(), CoroutineScope, OnItemClickListener{
             if(respuesta.isSuccessful){
                 val listaDeRespuestaPokemon = respuesta.body()?.results
                 val listaUrlPokemon = obtenerListaDeUrlDePokemon(listaDeRespuestaPokemon)
-                val listaParaMostrarRecyclerView = obtenerObjetoPokemonAPartirDeUrl(listaUrlPokemon)
+                obtenerObjetoPokemonAPartirDeUrl(listaUrlPokemon)
             }else{
 
             }
