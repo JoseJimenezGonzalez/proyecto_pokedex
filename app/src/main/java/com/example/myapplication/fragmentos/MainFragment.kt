@@ -19,6 +19,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import kotlin.coroutines.CoroutineContext
@@ -43,6 +44,7 @@ class MainFragment() : Fragment(), CoroutineScope, OnItemClickListener{
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
+        obtenerRetrofit()
         return binding.root
     }
 
@@ -50,16 +52,30 @@ class MainFragment() : Fragment(), CoroutineScope, OnItemClickListener{
         super.onViewCreated(view, savedInstanceState)
 
         //Codigo
+        setupRecyclerView()
+        cargarListaDePokemon()
 
     }
 
     private fun obtenerRetrofit(): Retrofit {
+        servicio = Retrofit.Builder()
+            .baseUrl("https://pokeapi.co/api/v2/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(APIServiceList::class.java)
+
+        servicioApiService = Retrofit.Builder()
+            .baseUrl("https://pokeapi.co/api/v2/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(APIService::class.java)
 
         return Retrofit.Builder()
             .baseUrl("https://pokeapi.co/api/v2/pokemon/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
+
 
     private fun cargarListaDePokemon() {
         val llamada = servicio.getPokemonList()
@@ -83,20 +99,26 @@ class MainFragment() : Fragment(), CoroutineScope, OnItemClickListener{
         }
         return listaUrl
     }
-    private suspend fun obtenerObjetoPokemonAPartirDeUrl(listaDeUrl: MutableList<String>): MutableList<PokemonRecyclerView>{
-        var listaPokemonRecyclerView = mutableListOf<PokemonRecyclerView>()
+    private suspend fun obtenerObjetoPokemonAPartirDeUrl(listaDeUrl: MutableList<String>) {
         listaDeUrl.forEach { url ->
             val respuesta = servicioApiService.obtenerDatosPorUrlPokemon(url)
-            if(respuesta.isSuccessful){
+            if (respuesta.isSuccessful) {
                 val pokemonApi = respuesta.body()
-                val pokemonRecyclerView = pokemonApi?.sprites?.other?.officialArtWork?.let { PokemonRecyclerView(pokemonApi.name, it.front_default) }
+                val nombrePokemon = pokemonApi?.name
+                val urlFotoPokemon = pokemonApi?.sprites?.other?.officialArtWork?.let{it.front_default}
+                val pokemonRecyclerView = PokemonRecyclerView(nombrePokemon!!, urlFotoPokemon!!)
                 if (pokemonRecyclerView != null) {
-                    listaPokemon.add(pokemonRecyclerView)
+                    withContext(Dispatchers.Main) {
+                        // Cambiar al hilo principal antes de actualizar la interfaz de usuario
+                        listaPokemon.add(pokemonRecyclerView)
+                        adaptador.notifyDataSetChanged()
+                    }
                 }
             }
         }
-        return listaPokemonRecyclerView
     }
+
+
 
     private fun setupRecyclerView() {
         val recyclerView = binding.rvListaPokemonAPI

@@ -5,7 +5,7 @@ import retrofit2.Call
 import retrofit2.http.GET
 
 interface APIServiceList {
-    @GET("pokemon")
+    @GET("pokemon/?offset=0&limit=1302")
     fun getPokemonList(): Call<PokemonListaApi>
 }
 
