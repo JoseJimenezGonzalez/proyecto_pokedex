@@ -2,6 +2,6 @@ package com.example.myapplication.modelo
 
 data class PokemonRecyclerView
     (
-            val urlFoto: String,
-            val nombre: String
+    val nombre: String,
+    val urlFoto: String
             )

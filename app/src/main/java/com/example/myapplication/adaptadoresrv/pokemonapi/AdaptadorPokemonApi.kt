@@ -20,12 +20,13 @@ class AdaptadorPokemonApi(
 
         val binding = ItemPokemonApiBinding.bind(view)
 
+
         init {
             view.setOnClickListener(this)
         }
 
         fun bind(pokemon: PokemonRecyclerView) {
-            binding.tvNombrePokemon.text = pokemon.nombre
+            binding.tvNombrePokemon.text = pokemon.nombre.capitalize()
             Picasso.get().load(pokemon.urlFoto).into(binding.ivFotoPokemon)
         }
 

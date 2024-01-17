@@ -1,11 +1,11 @@
 package com.example.myapplication.fragmentos
 
 import android.os.Bundle
-import android.view.ContentInfo
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.OnItemClickListener
 import com.example.myapplication.adaptadoresrv.pokemonapi.AdaptadorPokemonApi
@@ -13,7 +13,6 @@ import com.example.myapplication.api.APIService
 import com.example.myapplication.api.APIServiceList
 import com.example.myapplication.databinding.FragmentMainBinding
 import com.example.myapplication.modelo.DatosPokemonListaApi
-import com.example.myapplication.modelo.PokemonApi
 import com.example.myapplication.modelo.PokemonRecyclerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -54,7 +53,6 @@ class MainFragment() : Fragment(), CoroutineScope, OnItemClickListener{
         //Codigo
         setupRecyclerView()
         cargarListaDePokemon()
-
     }
 
     private fun obtenerRetrofit(): Retrofit {
