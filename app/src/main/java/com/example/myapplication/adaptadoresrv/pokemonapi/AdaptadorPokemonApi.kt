@@ -31,11 +31,9 @@ class AdaptadorPokemonApi(
         }
 
         override fun onClick(p0: View?) {
-            val posicion: Int = absoluteAdapterPosition
-            if (posicion != RecyclerView.NO_POSITION) {
-                val pokemon: PokemonRecyclerView = listaPokemon[posicion]
-                itemClickListener.onItemClick(pokemon)
-            }
+            val posicion: Int = adapterPosition
+            val pokemon: PokemonRecyclerView = listaPokemon[posicion]
+            itemClickListener.onItemClick(pokemon)
         }
 
     }
@@ -49,8 +47,6 @@ class AdaptadorPokemonApi(
         // Aquí puedes actualizar las vistas con la información del Pokémon en la posición dada
         val pokemonActual = listaPokemon[position]
         holder.bind(pokemonActual)
-
-
     }
 
     override fun getItemCount(): Int = listaPokemon.size

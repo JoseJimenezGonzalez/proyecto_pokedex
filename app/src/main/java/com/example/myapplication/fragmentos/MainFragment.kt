@@ -169,12 +169,12 @@ class MainFragment() : Fragment(), CoroutineScope, OnItemClickListener{
         get() = Dispatchers.IO + job
 
     override fun onItemClick(pokemon: PokemonRecyclerView) {
-        lifecycleScope.launch{
-            val nombrePokemonSeleccionado = pokemon.nombre.lowercase()
-            Log.d("nombre pokemon seleccionado", nombrePokemonSeleccionado)
-            val objetoPokemon = obtenerPokemonAPartirDeNombre(nombrePokemonSeleccionado)
-            Log.d("nombre pokemon seleccionado", nombrePokemonSeleccionado)
-            if(objetoPokemon.nombre == ""){
+        Log.d("Nombre del pokemon", pokemon.nombre)
+        lifecycleScope.launch {
+            val objetoPokemon = obtenerPokemonAPartirDeNombre(pokemon.nombre)
+            Log.d("Nombre pokemon objeto", objetoPokemon.nombre)
+            //Pasar el objeto pokemon al otro fragment
+            if(objetoPokemon.nombre.isEmpty()){
                 Toast.makeText(context, "No existe ese pokemon", Toast.LENGTH_SHORT).show()
             }else{
                 val bundle = Bundle()
@@ -183,6 +183,7 @@ class MainFragment() : Fragment(), CoroutineScope, OnItemClickListener{
                 fragment.arguments = bundle
                 findNavController().navigate(R.id.action_mainFragment_to_verPokemonApiFragment)
             }
+
         }
     }
 }

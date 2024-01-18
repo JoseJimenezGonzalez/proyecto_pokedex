@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -32,13 +33,18 @@ class VerPokemonApiFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         //Codigo
-        val intent = requireActivity().intent
-        val pokemon = intent.parcelable<DatosPokemon>("pokemon")
-
-        //Pintamos la UI
-        Picasso.get().load(pokemon?.imageUrl).into(binding.ivFotoPokemon)
-        binding.tv.text = pokemon?.nombre?.capitalize()
-
+        Log.d("Nuevo fragmento", "Hola desde fragment api pokemon ver")
+        val bundle = arguments
+        Log.d("Contenido de bundle", bundle.toString())
+        if (bundle != null) {
+            // Obtener el objeto DatosPokemon del Bundle
+            val pokemon: DatosPokemon? = bundle.parcelable("pokemon")
+            // Hacer algo con el objeto DatosPokemon
+            if (pokemon != null) {
+                val nombre = pokemon.nombre
+                Picasso.get().load(pokemon?.imageUrl).into(binding.ivFotoPokemon)
+            }
+        }
     }
 
     //La extension de funcion parcelable utilizara el metodo adecuado segun la version de la API
@@ -51,5 +57,4 @@ class VerPokemonApiFragment : Fragment() {
         SDK_INT >= 33 -> getParcelable(key, T::class.java)
         else -> @Suppress("DEPRECATION") getParcelable(key) as? T
     }
-
 }
