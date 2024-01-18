@@ -68,6 +68,7 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.12.0")
     implementation("org.jetbrains.kotlin:kotlin-android-extensions-runtime:1.6.21")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.0.0")
+    implementation("org.jetbrains.kotlin:kotlin-android-extensions-runtime:1.6.21")
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")

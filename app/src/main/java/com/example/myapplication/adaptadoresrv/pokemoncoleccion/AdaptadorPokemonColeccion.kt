@@ -15,6 +15,8 @@ class AdaptadorPokemonColeccion(
     private val itemClickListener: OnItemClickListenerCollection
 ) : RecyclerView.Adapter<AdaptadorPokemonColeccion.ViewHolder>() {
 
+    private var listaFiltrada = listaPokemon
+
     inner class ViewHolder(view: View): RecyclerView.ViewHolder(view), View.OnClickListener{
 
         // Aquí puedes inicializar las vistas de tu elemento de la lista si es necesario
@@ -48,6 +50,19 @@ class AdaptadorPokemonColeccion(
         // Aquí puedes actualizar las vistas con la información del Pokémon en la posición dada
         val pokemonActual = listaPokemon[position]
         holder.bind(pokemonActual)
+    }
+
+    // Método para filtrar la lista
+    fun filter(newText: String) {
+        val busqueda = newText.lowercase()
+        if (busqueda.isEmpty()) {
+           listaFiltrada = listaPokemon
+        } else {
+            listaFiltrada = listaPokemon.filter {
+                it.nombre.toString().lowercase().contains(busqueda)
+            }.toMutableList()
+        }
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int = listaPokemon.size

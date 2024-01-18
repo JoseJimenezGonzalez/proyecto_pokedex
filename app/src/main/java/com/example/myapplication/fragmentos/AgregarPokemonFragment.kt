@@ -3,6 +3,7 @@ package com.example.myapplication.fragmentos
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,13 +18,16 @@ import com.example.myapplication.modelo.PokemonColeccion
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
 class AgregarPokemonFragment : Fragment(), CoroutineScope {
@@ -34,8 +38,6 @@ class AgregarPokemonFragment : Fragment(), CoroutineScope {
     private var urlImagen: Uri? = null
 
     private lateinit var imagenPokemon: ImageView
-
-    private lateinit var listaPokemon: MutableList<PokemonColeccion>
 
     private lateinit var dbRef: DatabaseReference
 
@@ -55,8 +57,14 @@ class AgregarPokemonFragment : Fragment(), CoroutineScope {
         super.onViewCreated(view, savedInstanceState)
 
         //Codigo
-        
-        listaPokemon = obtenerListaPokemon(dbRef)
+
+        job = Job()
+
+        imagenPokemon = binding.ivImagenPokemon
+
+        dbRef = FirebaseDatabase.getInstance().reference
+
+        stRef = FirebaseStorage.getInstance().reference
 
         configurarBotonImageViewAccesoGaleria()
         
@@ -70,35 +78,22 @@ class AgregarPokemonFragment : Fragment(), CoroutineScope {
                 Toast.makeText(context, "Falta seleccionar imagen", Toast.LENGTH_SHORT).show()
             }else{
                 val idGenerado: String? = dbRef.child("Pokemon").child("Coleccion").push().key
+                Log.d("id generado", idGenerado.toString())
                 launch {
                     val urlFotoFirebase = guardarImagenCover(stRef, idGenerado!!, urlImagen!!)
                     escribirPokemon(dbRef, idGenerado, nombrePokemon, naturalezaPokemon, urlFotoFirebase, nivelPokemon)
-                    Toast.makeText(context, "Pokemon creado con exito", Toast.LENGTH_SHORT).show()
+                    //Fallo
+                    val esValido = escribirPokemon(dbRef, idGenerado, nombrePokemon, naturalezaPokemon, urlFotoFirebase, nivelPokemon).isSuccessful
+                    Log.d("¿Bien?", esValido.toString())
+                    withContext(Dispatchers.Main) {
+                        // Mostrar el Toast en el hilo principal
+                        Toast.makeText(context, "Creado con exito", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
 
         }
 
-    }
-
-    private fun obtenerListaPokemon(dbRef: DatabaseReference): MutableList<PokemonColeccion> {
-        val lista = mutableListOf<PokemonColeccion>()
-
-        dbRef.child("Pokemon").child("Coleccion").addValueEventListener(object :
-            ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                snapshot.children.forEach{hijo : DataSnapshot ->
-                    val pojoPokemon = hijo.getValue(PokemonColeccion::class.java)
-                    lista.add(pojoPokemon!!)
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                println(error.message)
-            }
-        })
-
-        return lista
     }
 
     private val accesoGaleria = registerForActivityResult(ActivityResultContracts.GetContent())
@@ -128,14 +123,16 @@ class AgregarPokemonFragment : Fragment(), CoroutineScope {
         return urlCoverFirebase.toString()
     }
 
-    private fun escribirPokemon(
+    fun escribirPokemon(
         dbRef: DatabaseReference,
         id: String,
         nombrePokemon: String,
         naturalezaPokemon: String,
         urlFirebase: String,
         nivel: Int
-    )=dbRef.child("Pokemon").child("Coleccion").child(id).setValue(PokemonColeccion(
+    )=
+        dbRef.child("Pokemon").child("Coleccion").child(id).setValue(
+            PokemonColeccion(
         nombrePokemon,
         naturalezaPokemon,
         id,
