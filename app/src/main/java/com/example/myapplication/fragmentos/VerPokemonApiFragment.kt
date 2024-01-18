@@ -34,6 +34,7 @@ class VerPokemonApiFragment : Fragment() {
 
         //Codigo
         Log.d("Nuevo fragmento", "Hola desde fragment api pokemon ver")
+        Log.d("arguments", arguments.toString())
         val bundle = arguments
         Log.d("Contenido de bundle", bundle.toString())
         if (bundle != null) {
@@ -43,6 +44,7 @@ class VerPokemonApiFragment : Fragment() {
             if (pokemon != null) {
                 val nombre = pokemon.nombre
                 Picasso.get().load(pokemon?.imageUrl).into(binding.ivFotoPokemon)
+                binding.tv.text = nombre
             }
         }
     }

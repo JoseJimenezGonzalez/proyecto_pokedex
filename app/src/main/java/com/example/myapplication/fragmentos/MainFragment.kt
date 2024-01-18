@@ -165,6 +165,11 @@ class MainFragment() : Fragment(), CoroutineScope, OnItemClickListener{
         recyclerView.adapter = adaptador
     }
 
+    override fun onDestroy() {
+        job.cancel()
+        super.onDestroy()
+    }
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + job
 
@@ -181,7 +186,8 @@ class MainFragment() : Fragment(), CoroutineScope, OnItemClickListener{
                 bundle.putParcelable("pokemon", objetoPokemon)
                 val fragment = VerPokemonApiFragment()
                 fragment.arguments = bundle
-                findNavController().navigate(R.id.action_mainFragment_to_verPokemonApiFragment)
+                Log.d("Cont bundle", bundle.toString())
+                findNavController().navigate(R.id.action_mainFragment_to_verPokemonApiFragment, bundle)
             }
 
         }
