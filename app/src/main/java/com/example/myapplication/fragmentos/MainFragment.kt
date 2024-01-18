@@ -1,23 +1,31 @@
 package com.example.myapplication.fragmentos
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.OnItemClickListener
+import com.example.myapplication.R
 import com.example.myapplication.adaptadoresrv.pokemonapi.AdaptadorPokemonApi
 import com.example.myapplication.api.APIService
 import com.example.myapplication.api.APIServiceList
 import com.example.myapplication.databinding.FragmentMainBinding
+import com.example.myapplication.modelo.DatosPokemon
 import com.example.myapplication.modelo.DatosPokemonListaApi
 import com.example.myapplication.modelo.PokemonRecyclerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -83,8 +91,6 @@ class MainFragment() : Fragment(), CoroutineScope, OnItemClickListener{
                 val listaDeRespuestaPokemon = respuesta.body()?.results
                 val listaUrlPokemon = obtenerListaDeUrlDePokemon(listaDeRespuestaPokemon)
                 obtenerObjetoPokemonAPartirDeUrl(listaUrlPokemon)
-            }else{
-
             }
         }
     }
@@ -105,16 +111,50 @@ class MainFragment() : Fragment(), CoroutineScope, OnItemClickListener{
                 val nombrePokemon = pokemonApi?.name
                 val urlFotoPokemon = pokemonApi?.sprites?.other?.officialArtWork?.let{it.front_default}
                 val pokemonRecyclerView = PokemonRecyclerView(nombrePokemon!!, urlFotoPokemon!!)
-                if (pokemonRecyclerView != null) {
-                    withContext(Dispatchers.Main) {
-                        // Cambiar al hilo principal antes de actualizar la interfaz de usuario
-                        listaPokemon.add(pokemonRecyclerView)
-                        adaptador.notifyDataSetChanged()
-                    }
+                withContext(Dispatchers.Main) {
+                    // Cambiar al hilo principal antes de actualizar la interfaz de usuario
+                    listaPokemon.add(pokemonRecyclerView)
+                    adaptador.notifyDataSetChanged()
                 }
             }
         }
     }
+
+    private suspend fun obtenerPokemonAPartirDeNombre(nombrePokemon: String): DatosPokemon {
+        return try {
+            val respuesta = servicioApiService.obtenerDatosPorUrlPokemon("pokemon/$nombrePokemon")
+            if (respuesta.isSuccessful) {
+                val pokemonApi = respuesta.body()
+                if (pokemonApi != null) {
+                    val urlFoto = pokemonApi.sprites.other.officialArtWork.front_default
+                    val nombre = pokemonApi.name
+                    val peso = pokemonApi.weight.toDouble()
+                    val altura = pokemonApi.height.toDouble()
+                    var tipos = ""
+                    pokemonApi.types.forEach { tipo ->
+                        tipos += "$tipo\n"
+                    }
+                    val estadisticas = "No tengo ganas"
+                    DatosPokemon(
+                        urlFoto,
+                        nombre,
+                        peso,
+                        altura,
+                        tipos,
+                        estadisticas
+                    )
+                } else {
+                    DatosPokemon("", "", 0.0, 0.0, "", "")
+                }
+            } else {
+                DatosPokemon("", "", 0.0, 0.0, "", "")
+            }
+        } catch (e: Exception) {
+            // Manejar excepciones, puedes lanzar la excepción o devolver un valor predeterminado
+            DatosPokemon("", "", 0.0, 0.0, "", "")
+        }
+    }
+
 
 
 
@@ -129,6 +169,20 @@ class MainFragment() : Fragment(), CoroutineScope, OnItemClickListener{
         get() = Dispatchers.IO + job
 
     override fun onItemClick(pokemon: PokemonRecyclerView) {
-
+        lifecycleScope.launch{
+            val nombrePokemonSeleccionado = pokemon.nombre.lowercase()
+            Log.d("nombre pokemon seleccionado", nombrePokemonSeleccionado)
+            val objetoPokemon = obtenerPokemonAPartirDeNombre(nombrePokemonSeleccionado)
+            Log.d("nombre pokemon seleccionado", nombrePokemonSeleccionado)
+            if(objetoPokemon.nombre == ""){
+                Toast.makeText(context, "No existe ese pokemon", Toast.LENGTH_SHORT).show()
+            }else{
+                val bundle = Bundle()
+                bundle.putParcelable("pokemon", objetoPokemon)
+                val fragment = VerPokemonApiFragment()
+                fragment.arguments = bundle
+                findNavController().navigate(R.id.action_mainFragment_to_verPokemonApiFragment)
+            }
+        }
     }
 }
